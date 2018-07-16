@@ -53,6 +53,10 @@
                                         {{ __('My Threads') }}
                                     </a>
                                 @endauth
+
+                                <a class="dropdown-item" href="/threads?papular=1">
+                                    {{ __('Papular Threads') }}
+                                </a>
                             </div>
                         </li>
 

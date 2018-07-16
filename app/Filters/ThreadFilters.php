@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ThreadFilters extends Filters
 {
-	protected $filters = ['by'];
+	protected $filters = ['by', 'papular'];
 
 	/**
 	 * Filter the query name by a username.
@@ -15,10 +15,22 @@ class ThreadFilters extends Filters
 	 * @param string $username
 	 *@return mixed
 	*/
-	public function by($username)
+	protected function by($username)
 	{
 		$user = User::where('name', $username)->firstOrFail();
 
 		return $this->builder->where('user_id', $user->id);
+	}
+
+	/**
+	 * Filter the query according to most papular threads.
+	 * 
+	 *@return $this
+	*/
+	protected function papular()
+	{
+		$this->builder->getQuery()->orders = [];
+		
+		return $this->builder->orderBy('replies_count', 'desc');
 	}
 }
