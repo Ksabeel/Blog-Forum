@@ -12,7 +12,7 @@
                         </a> posted: {{ $thread->title }}
                     </div>
                     
-                    @auth
+                    @can ('delete', $thread)
                         <div class="float-right">
                             <form action="{{ $thread->path() }}" method="POST">
                                 @csrf
@@ -21,7 +21,7 @@
                                 <button type="submit" class="btn btn-sm btn-link">Delete Thread</button>
                             </form>
                         </div>
-                    @endauth
+                    @endcan
                 </div>
 
                 <div class="card-body">
