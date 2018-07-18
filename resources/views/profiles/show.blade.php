@@ -9,21 +9,15 @@
                 <small>Since {{ $profileUser->created_at->diffForHumans() }}</small>
             </h1>
 
-            @foreach ($threads as $thread)
-                <div class="card mt-4">
-                    <div class="card-header">
-                        {{ $thread->title }}
-                    </div>
-
-                    <div class="card-body">
-                        {{ $thread->body }}
-                    </div>
+            @foreach ($activities as $date => $activity)
+                <div class="mt-3">
+                    <h3>{{ $date }}</h3>
                 </div>
-            @endforeach
 
-            <div class="mt-4">
-                {{ $threads->links() }}
-            </div>
+                @foreach ($activity as $record)
+                    @include ("profiles.activities.{$record->type}", ['activity' => $record])
+                @endforeach
+            @endforeach
         </div>
     </div>
 </div>
