@@ -10,6 +10,13 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <script>
+        window.App = {!! json_encode([
+            'user' => Auth::user(),
+            'signedIn' => Auth::check()
+        ]) !!}
+    </script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 
