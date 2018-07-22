@@ -21,6 +21,22 @@ class Reply extends Model
     protected $appends = ['favoritesCount', 'isFavorited'];
 	
     /**
+     * Boot the model.
+    */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created( function($reply) {
+            $reply->thread->increment('replies_count');
+        });
+
+        static::deleted( function($reply) {
+            $reply->thread->decrement('replies_count');
+        });
+    }
+
+    /**
      * A reply has an owner.
      *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -30,11 +46,21 @@ class Reply extends Model
     	return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * A reply belongs to a thread.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+    */
     public function thread()
     {
         return $this->belongsTo(Thread::class);
     }
 
+    /**
+     * Get string path for the reply.
+     *
+     * @return string
+    */
     public function path()
     {
         return $this->thread->path() . "#reply-{$this->id}";

@@ -33,6 +33,10 @@
                         <a class="dropdown-item" href="/threads?papular=1">
                             {{ __('Papular Threads') }}
                         </a>
+
+                        <a class="dropdown-item" href="/threads?unanswered=1">
+                            {{ __('Unanswered Threads') }}
+                        </a>
                     </div>
                 </li>
 
