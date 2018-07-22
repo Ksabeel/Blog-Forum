@@ -32,33 +32,14 @@
                 
                 <div class="mt-4">
                     <p>Comments</p>
-                    {{-- @foreach ($replies as $reply)
-                        @include ('threads.reply')
-                    @endforeach --}}
-
-                    <replies :data="{{ $thread->replies }}" @removed="repliesCount--"></replies>
+                    <replies :data="{{ $thread->replies }}"
+                             @added="repliesCount++"
+                             @removed="repliesCount--"></replies>
                 </div>
 
                 <div class="mt-3">
                     {{ $replies->links() }}
                 </div>
-
-                @auth
-                    <form action="{{ $thread->path() . '/replies' }}" method="POST" class="mt-5">
-                        @csrf
-                        
-                        <div class="form-group">
-                            <textarea name="body" id="body" rows="5" placeholder="Something to say?" class="form-control"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <button class="btn btn-outline-primary" type="submit">Post</button>
-                        </div>
-                    </form>
-
-                @else
-                    <p class="text-center mt-5">Please <a href="{{ route('login') }}">sign in</a> to participate in this discussion</p>
-                @endauth
             </div>
 
 
