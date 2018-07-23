@@ -32,13 +32,7 @@
                 
                 <div class="mt-4">
                     <p>Comments</p>
-                    <replies :data="{{ $thread->replies }}"
-                             @added="repliesCount++"
-                             @removed="repliesCount--"></replies>
-                </div>
-
-                <div class="mt-3">
-                    {{ $replies->links() }}
+                    <replies @added="repliesCount++" @removed="repliesCount--"></replies>
                 </div>
             </div>
 
