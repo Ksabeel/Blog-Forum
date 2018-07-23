@@ -1,5 +1,6 @@
 <script>
 	import Replies from '../Replies.vue';
+	import SubscribeButton from '../SubscribeButton.vue';
 
 	export default {
 		props: ['threadRepliesCount'],
@@ -10,7 +11,7 @@
 			}
 		},
 
-		components: { Replies },
+		components: { Replies, SubscribeButton },
 
 	};
 </script>

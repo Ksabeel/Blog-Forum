@@ -23,4 +23,16 @@ class ThreadSubscriptionsController extends Controller
     {
     	$thread->subscribe();
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  $channel
+     * @param  \App\Thread  $thread
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($channel, Thread $thread)
+    {
+    	$thread->unsubscribe();
+    }
 }
