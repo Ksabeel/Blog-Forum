@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -28,7 +29,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the route key name for laravel.
+     * Get the route key name for User.
      *
      * @return string
     */
@@ -37,13 +38,36 @@ class User extends Authenticatable
         return 'name';
     }
 
+    /**
+     * A user hasMany threads.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+    */
     public function threads()
     {
         return $this->hasMany(Thread::class)->latest();
     }
 
+    /**
+     * A user hasMany activities.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+    */
     public function activity()
     {
         return $this->hasMany(Activity::class);
+    }
+
+    public function read($thread)
+    {
+        cache()->forever(
+            $this->visitedThreadCacheKey($thread), 
+            Carbon::now()
+        );
+    }
+
+    public function visitedThreadCacheKey($thread)
+    {
+        return sprintf("users.%s.visits.%s", $this->id, $thread->id);
     }
 }

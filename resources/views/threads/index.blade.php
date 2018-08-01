@@ -10,7 +10,15 @@
                     <div class="card-header">
                         <div class="float-left">
                             <a href="{{ $thread->path() }}">
-                                <h4>{{ $thread->title }}</h4>
+
+                                @if (auth()->check() && $thread->hasUpdatesFor(auth()->user()))
+                                    
+                                    <strong>{{ $thread->title }}</strong>
+                                @else
+
+                                    {{ $thread->title }}
+
+                                @endif
                             </a>
                         </div>
 

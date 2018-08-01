@@ -102,6 +102,21 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    /**
+     * A thread hasMany subscribers
+     *
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
+
+    /**
+     * Subscribe a user to the current thread.
+     *
+     * @param int|null $userId
+    */
     public function subscribe($userId = null)
     {
         $this->subscriptions()->create([
@@ -111,6 +126,11 @@ class Thread extends Model
         return $this;
     }
 
+    /**
+     * Unsubscribe a user from the current thread.
+     *
+     * @param int|null $userId
+    */
     public function unsubscribe($userId = null)
     {
         $this->subscriptions()
@@ -118,15 +138,22 @@ class Thread extends Model
             ->delete();
     }
 
-    public function subscriptions()
-    {
-        return $this->hasMany(ThreadSubscription::class);
-    }
-
+    /**
+     * Determine if the current user is subscribed to the thread.
+     *
+     * @return boolean
+    */
     public function getIsSubscribedToAttribute()
     {
         return $this->subscriptions()
             ->where('user_id', auth()->id())
             ->exists();   
+    }
+
+    public function hasUpdatesFor($user)
+    {
+        $key = $user->visitedThreadCacheKey($this);
+
+        return $this->updated_at > cache($key);
     }
 }
