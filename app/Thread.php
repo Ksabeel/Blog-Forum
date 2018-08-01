@@ -77,12 +77,17 @@ class Thread extends Model
     {
         $reply = $this->replies()->create($reply);
 
+        $this->notifySubscribers($reply);
+
+        return $reply;
+    }
+
+    protected function notifySubscribers($reply)
+    {
         $this->subscriptions
             ->where('user_id', '!=', $reply->user_id)
             ->each
             ->notify($reply);
-
-        return $reply;
     }
 
     /**
