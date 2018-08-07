@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Spam;
 use App\Reply;
 use App\Thread;
+use App\Inspections\Spam;
 use Illuminate\Http\Request;
 
 class ReplyController extends Controller
@@ -31,6 +31,7 @@ class ReplyController extends Controller
      *
      * @param  $channel
      * @param  \App\Thread  $thread
+     * @param  \App\Inspections\Spam  $spam
      * @return \Illuminate\Http\Response
      */
     public function store($channel, Thread $thread, Spam $spam)
