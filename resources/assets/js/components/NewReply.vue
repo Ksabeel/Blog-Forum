@@ -52,6 +52,9 @@
 
 						this.$emit('created', data)
 					})
+					.catch(error => {
+						flash(error.response.data, 'danger')
+					})
 			}
 		}
 	};

@@ -65,8 +65,12 @@
 
 		methods: {
 			update() {
-				axios.patch(`/replies/${this.data.id}/update`, {
+				axios.patch(`/replies/${this.id}/update`, {
 					body: this.body
+				})
+				.catch(error => {
+					flash(error.response.data, 'danger');
+					this.body;
 				})
 
 				this.editing = false;
@@ -74,9 +78,9 @@
 			},
 
 			destroy() {
-				axios.delete(`/replies/${this.data.id}`)
+				axios.delete(`/replies/${this.id}`)
 
-				this.$emit('deleted', this.data.id)
+				this.$emit('deleted', this.id)
 
 				flash('Your reply has been deleted!')
 			}
