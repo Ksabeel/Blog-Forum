@@ -7,6 +7,7 @@ use App\Thread;
 use App\Rules\SpamFree;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\CreatePostRequest;
 
 class ReplyController extends Controller
 {
@@ -35,29 +36,12 @@ class ReplyController extends Controller
      * @param  \App\Inspections\Spam  $spam
      * @return \Illuminate\Http\Response
      */
-    public function store($channel, Thread $thread)
+    public function store($channel, Thread $thread, CreatePostRequest $request)
     {
-        if (Gate::denies('create', new Reply)) {
-            return response(
-                'You are posting too frequently. Please take a break. :)', 422
-            );
-        }
-
-        try {
-
-            request()->validate(['body' => ['required', new SpamFree]]);
-
-        	$reply = $thread->addReply([
-        		'body' => request('body'),
-        		'user_id' => auth()->id()
-        	]);
-        } catch (\Exception $e) {
-            return response(
-                'Sorry, your reply could not be saved at this time.', 422
-            );
-        }
-        
-        return $reply->load('owner');
+    	return $thread->addReply([
+    		'body' => request('body'),
+    		'user_id' => auth()->id()
+    	])->load('owner');
     }
 
     /**
