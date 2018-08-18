@@ -8,23 +8,17 @@ use Illuminate\Http\Request;
 
 class ProfilesController extends Controller
 {
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\User  $user
+     * @return \view
+     */
     public function show(User $user)
     {
     	return view('profiles.show', [
     		'profileUser' => $user,
     		'activities' => Activity::feed($user)
     	]);
-    }
-
-    /**
-     * @param $user
-     *
-     * @return mixes
-    */
-    protected function getActivity($user)
-    {
-    	return $user->activity()->latest()->with('subject')->get()->groupBy( function($activity) {
-    		return $activity->created_at->format('Y-m-d');
-    	});
     }
 }

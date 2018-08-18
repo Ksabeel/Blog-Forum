@@ -16,8 +16,16 @@ class Thread extends Model
     */
     protected $guarded = [];
 
+    /**
+     * Get the relations for threads with the $with property.
+     * @var array
+     */
     protected $with = ['creator', 'channel'];
 
+    /**
+     * Get this property with $appends for json response.
+     * @var array
+     */
     protected $appends = ['isSubscribedTo'];
     
     /**
@@ -42,6 +50,11 @@ class Thread extends Model
         return "/threads/{$this->channel->slug}/{$this->id}";
     }
     
+    /**
+     * A thread can have many replies.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+    */
     public function replies()
     {
     	return $this->hasMany(Reply::class);

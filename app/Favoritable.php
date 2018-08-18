@@ -35,6 +35,11 @@ trait Favoritable
     	}
     }
 
+    /**
+     * Determine if the current reply has been unfavorited.
+     *
+     * @return Boolean
+    */
     public function unfavorite()
     {
         $attributes = ['user_id' => auth()->id()];
@@ -52,11 +57,17 @@ trait Favoritable
         return !! $this->favorites->where('user_id', auth()->id())->count();
     }
 
+    /**
+     * Get the favorited attribute.
+     */
     public function getIsFavoritedAttribute()
     {
         return $this->isFavorited();
     }
 
+    /**
+     * Get the favorites count.
+     */
     public function getFavoritesCountAttribute()
     {
         return $this->favorites->count();
