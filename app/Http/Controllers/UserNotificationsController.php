@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class UserNotificationsController extends Controller
 {
+	/**
+	 * Create a new UserNotificationsController instance.
+	 */
 	public function __construct()
 	{
 		$this->middleware('auth');

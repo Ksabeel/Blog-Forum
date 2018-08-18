@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Channel extends Model
 {
 	/**
-	 * Get the route key name for laravel.
+	 * Get the route key name for Channel.
 	 *
 	 * @return string
 	*/

@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Thread;
 use App\Channel;
-use Carbon\Carbon;
 use App\Rules\SpamFree;
 use Illuminate\Http\Request;
 use App\Filters\ThreadFilters;
 
 class ThreadController extends Controller
 {
+    /**
+     * Create a new ThreadController instance.
+     */
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
@@ -124,6 +126,12 @@ class ThreadController extends Controller
         return redirect('/threads');
     }
 
+    /**
+     * Get all threads.
+     * @param  $channel
+     * @param  filters
+     * @return $threads
+     */
     protected function getThreads($channel, $filters)
     {
         $threads = Thread::latest()->filter($filters);

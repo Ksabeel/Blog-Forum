@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class ThreadSubscriptionsController extends Controller
 {
+    /**
+     * Create a new ThreadSubscriptionsController instance.
+     */
 	public function __construct()
 	{
 		$this->middleware('auth');

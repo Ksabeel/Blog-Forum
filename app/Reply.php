@@ -17,8 +17,16 @@ class Reply extends Model
     */
 	protected $guarded = [];
 
+    /**
+     * Get the relations for reply with the $with property.
+     * @var array
+     */
     protected $with = ['owner', 'favorites'];
 
+    /**
+     * Get this property with $appends for json response.
+     * @var array
+     */
     protected $appends = ['favoritesCount', 'isFavorited'];
 	
     /**
@@ -57,11 +65,17 @@ class Reply extends Model
         return $this->belongsTo(Thread::class);
     }
 
+    /**
+     * Get the latest reply.
+     */
     public function wasJustPublished()
     {
         return $this->created_at->gt(Carbon::now()->subMinute());
     }
     
+    /**
+     * Find the any users in the reply body with regexp.
+     */
     public function mentionedUsers()
     {
         preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);

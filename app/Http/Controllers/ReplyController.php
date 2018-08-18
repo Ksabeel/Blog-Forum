@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Reply;
 use App\Thread;
 use App\Rules\SpamFree;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use App\Notifications\YouWereMentioned;
 use App\Http\Requests\CreatePostRequest;
 
 class ReplyController extends Controller
 {
+    /**
+     * Create a new ReplyController instance.
+     */
 	public function __construct()
 	{
 		$this->middleware('auth')->except(['index']);	
@@ -56,17 +56,9 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
-        try {
-            
-            request()->validate(['body' => new SpamFree]);
+        request()->validate(['body' => new SpamFree]);
 
-            $reply->update(['body' => request('body')]);
-        } catch(\Exception $e) {
-            return response(
-                'Sorry, your reply could not be saved at this time.', 422
-            );
-        }
- 
+        $reply->update(['body' => request('body')]);        
     }
 
     /**
