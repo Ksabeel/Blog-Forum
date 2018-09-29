@@ -38,6 +38,11 @@ class User extends Authenticatable
         return 'name';
     }
 
+    public function avatar()
+    {
+        return $this->avatar_path ? '/storage/'.$this->avatar_path : '/storage/avatars/default.png';
+    }
+
     /**
      * A user hasMany threads.
      *

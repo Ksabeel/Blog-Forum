@@ -41,4 +41,4 @@ Route::get('profiles/{user}/notifications', 'UserNotificationsController@index')
 Route::delete('profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy');
 
 Route::get('api/users', 'API\UsersController@index');
-Route::post('api/users/{user}/avatar', 'API\UserAvatarController@store')->middleware('auth');
+Route::post('api/users/{user}/avatar', 'API\UserAvatarController@store')->name('avatar')->middleware('auth');
