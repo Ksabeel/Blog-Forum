@@ -31,6 +31,7 @@ window.flash = function (message, level = 'success') {
 Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('paginator', require('./components/Paginator.vue'));
 Vue.component('user-notification', require('./components/UserNotification.vue'));
+Vue.component('avatar-form', require('./components/AvatarForm.vue'));
 
 Vue.component('thread-view', require('./components/pages/ThreadView.vue'));
 

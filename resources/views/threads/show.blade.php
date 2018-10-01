@@ -12,7 +12,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-left">
-                            <img src="{{ $thread->creator->avatar() }}" alt="{{ $thread->creator->name }}" class="rounded-circle mr-1" width="30">
+                            <img src="{{ $thread->creator->avatar_path }}" alt="{{ $thread->creator->name }}" class="rounded-circle mr-1" width="30">
                             <a href="{{ route('profiles', $thread->creator) }}">
                                 {{ $thread->creator->name }}
                             </a> posted: {{ $thread->title }}
