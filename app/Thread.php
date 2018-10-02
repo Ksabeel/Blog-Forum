@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Visits;
-use App\RecordsVisits;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Database\Eloquent\Model;
 
@@ -163,10 +161,5 @@ class Thread extends Model
         $key = $user->visitedThreadCacheKey($this);
 
         return $this->updated_at > cache($key);
-    }
-
-    public function visits()
-    {
-        return new Visits($this);
     }
 }
