@@ -10,8 +10,6 @@
                 </h5>
 
                 <a href="{{ $thread->path() }}">
-
-
                     @if (auth()->check() && $thread->hasUpdatesFor(auth()->user()))
                         
                         <strong>{{ $thread->title }}</strong>
@@ -32,6 +30,10 @@
 
         <div class="card-body">
             {{ $thread->body }}
+        </div>
+
+        <div class="card-footer">
+            {{ $thread->visits() }} Visits
         </div>
 
     </div>

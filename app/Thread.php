@@ -2,12 +2,13 @@
 
 namespace App;
 
+use App\RecordsVisits;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
-    use RecordsActivity;
+    use RecordsActivity, RecordsVisits;
 
     /**
      * Don't auto-apply mass assignment protection.

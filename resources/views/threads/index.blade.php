@@ -16,12 +16,10 @@
 
 					<div class="card-body">
 						<ul class="list-group">
-							@foreach ($trending as $thread)
-								
+							@foreach ($trending as $thread)	
 								<li class="list-group-item">
 									<a href="{{ url($thread->path) }}">{{ $thread->title }}</a>
 								</li>
-
 							@endforeach
 						</ul>
 					</div>
