@@ -12,7 +12,7 @@ class CreateThreadsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function guests_may_not_create_threads()
+    function guests_may_not_create_threads()
     {
         $this->withExceptionHandling();
 
@@ -24,7 +24,7 @@ class CreateThreadsTest extends TestCase
     }
 
     /** @test */
-    public function guests_cannot_see_the_create_thread_page()
+    function guests_cannot_see_the_create_thread_page()
     {
     	$this->withExceptionHandling()
     		->get('/threads/create')
@@ -46,7 +46,7 @@ class CreateThreadsTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_create_new_forum_threads()
+    function a_user_can_create_new_forum_threads()
     {
         $this->signIn();
 
@@ -60,21 +60,21 @@ class CreateThreadsTest extends TestCase
     }
 
     /** @test */
-    public function a_thread_requires_a_title()
+    function a_thread_requires_a_title()
     {
         $this->publishThread(['title' => null])
             ->assertSessionHasErrors('title');   
     }
 
     /** @test */
-    public function a_thread_requires_a_body()
+    function a_thread_requires_a_body()
     {
         $this->publishThread(['body' => null])
             ->assertSessionHasErrors('body');   
     }
 
     /** @test */
-    public function a_thread_requires_a_valid_channel()
+    function a_thread_requires_a_valid_channel()
     {
         factory('App\Channel', 2)->create();
 
@@ -83,6 +83,32 @@ class CreateThreadsTest extends TestCase
 
         $this->publishThread(['channel_id' => 999])
             ->assertSessionHasErrors('channel_id');
+    }
+
+    /** @test */
+    function a_thread_requires_a_unique_slug()
+    {
+        $this->signIn();
+
+        $thread = create('App\Thread', ['title' => 'Foo Title']);
+
+        $this->assertEquals($thread->fresh()->slug, 'foo-title');
+
+        $thread = $this->postJson(route('threads'), $thread->toArray())->json();
+
+        $this->assertEquals("foo-title-{$thread['id']}", $thread['slug']);
+    }
+
+    /** @test */
+    function a_thread_with_a_title_that_ends_in_a_number_should_generate_the_propper_slug()
+    {
+        $this->signIn();
+
+        $thread = create('App\Thread', ['title' => 'Some Title 24']);
+
+        $thread = $this->postJson(route('threads'), $thread->toArray())->json();
+
+        $this->assertEquals("some-title-24-{$thread['id']}", $thread['slug']);   
     }
 
     /** @test */
