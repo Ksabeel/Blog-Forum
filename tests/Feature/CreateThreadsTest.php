@@ -96,7 +96,7 @@ class CreateThreadsTest extends TestCase
 
         $thread = $this->postJson(route('threads'), $thread->toArray())->json();
 
-        $this->assertEquals("foo-title-{$thread['id']}", $thread['slug']);
+        $this->assertEquals("foo-title-".md5($thread['id']), $thread['slug']);
     }
 
     /** @test */
@@ -108,7 +108,7 @@ class CreateThreadsTest extends TestCase
 
         $thread = $this->postJson(route('threads'), $thread->toArray())->json();
 
-        $this->assertEquals("some-title-24-{$thread['id']}", $thread['slug']);   
+        $this->assertEquals("some-title-24-".md5($thread['id']), $thread['slug']);   
     }
 
     /** @test */
