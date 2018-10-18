@@ -85,6 +85,11 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class);
     }
 
+    public function isAdmin()
+    {
+        return in_array($this->name, ['Sabeel']);
+    }
+
     public function read($thread)
     {
         cache()->forever(

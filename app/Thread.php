@@ -37,6 +37,11 @@ class Thread extends Model
     {
         return 'slug';
     }
+
+    public function lock()
+    {
+        $this->update(['locked' => true]);
+    }
     
     /**
      * Boot the model.
