@@ -2,13 +2,13 @@
 	<div :id="'reply-'+id" class="card mt-3">
 	    <div class="card-header">
 	    	<div class="float-left">
-		        <a :href="'/profiles/'+data.owner.name"
-		        	v-text="data.owner.name">
+		        <a :href="'/profiles/'+reply.owner.name"
+		        	v-text="reply.owner.name">
 		        </a> said <span v-text="ago"></span>
 	    	</div>
 
 			<div v-if="signedIn">
-	           <favorite :reply="data"></favorite>
+	           <favorite :reply="reply"></favorite>
 			</div>	        
 	    </div>
 
@@ -27,13 +27,16 @@
 	        <div v-else v-html="body"></div>
 	    </div>
 
-        <div class="card-footer">
-        	<div v-if="authorize('updateReply', reply)" class="float-left">
+        <div class="card-footer" v-if="authorize('owns', reply) || authorize('owns', reply.thread)">
+        	<div v-if="authorize('owns', reply)" class="float-left">
 	            <button class="btn btn-sm btn-outline-secondary" @click="editing = true">Edit</button>
 	            <button class="btn btn-sm btn-outline-danger" @click="destroy">Delete</button>
         	</div>
 
-            <button class="btn btn-sm btn-outline-secondary float-right" @click="markBestReply" v-if="! isBest">Best Reply?</button>
+            <button class="btn btn-sm btn-outline-secondary float-right" 
+            		@click="markBestReply" 
+            		v-show="! isBest"
+            		v-if="authorize('owns', reply.thread)">Best Reply?</button>
         </div>
 	</div>
 </template>
@@ -43,15 +46,14 @@
 	import moment from 'moment'
 
 	export default {
-		props: ['data'],
+		props: ['reply'],
 
 		data() {
 			return {
-				body: this.data.body,
-				id: this.data.id,
+				body: this.reply.body,
+				id: this.reply.id,
 				editing: false,
-				isBest: this.data.isBest,
-				reply: this.data
+				isBest: this.reply.isBest,
 			}
 		},
 
@@ -59,7 +61,7 @@
 
 		computed: {
 			ago() {
-				return moment(this.data.created_at).fromNow();
+				return moment(this.reply.created_at).fromNow();
 			},
 		},
 
