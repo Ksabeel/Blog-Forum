@@ -30392,15 +30392,31 @@ __webpack_require__(139);
 
 window.Vue = __webpack_require__(161);
 
-Vue.prototype.authorize = function (handler) {
+// Authorization
+var authorization = __webpack_require__(215);
 
-  var user = window.App.user;
+Vue.prototype.authorize = function () {
 
-  return user ? handler(user) : false;
+  if (!window.App.signedIn) return false;
+
+  for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
+    params[_key] = arguments[_key];
+  }
+
+  if (typeof params[0] === 'string') {
+    return authorization[params[0]](params[1]);
+  }
+
+  return params[0](window.App.user);
 };
 
+// SignedIn
+Vue.prototype.signedIn = window.App.signedIn;
+
+// Event Bus
 window.events = new Vue();
 
+// Flash messages
 window.flash = function (message) {
   var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
 
@@ -65352,6 +65368,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -65363,7 +65383,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		return {
 			body: this.data.body,
 			id: this.data.id,
-			editing: false
+			editing: false,
+			isBest: this.data.isBest,
+			reply: this.data
 		};
 	},
 
@@ -65373,18 +65395,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	computed: {
 		ago: function ago() {
 			return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.data.created_at).fromNow();
-		},
-		signedIn: function signedIn() {
-			return window.App.signedIn;
-		},
-		canUpdate: function canUpdate() {
-			var _this = this;
-
-			return this.authorize(function (user) {
-				return _this.data.user_id == user.id;
-			});
 		}
 	},
+
+	created: function created() {
+		var _this = this;
+
+		window.events.$on('best-reply-selected', function (id) {
+			_this.isBest = id == _this.id;
+		});
+	},
+
 
 	methods: {
 		update: function update() {
@@ -65406,6 +65427,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			this.$emit('deleted', this.id);
 
 			flash('Your reply has been deleted!');
+		},
+		markBestReply: function markBestReply() {
+			axios.post('/replies/' + this.id + '/best');
+
+			window.events.$emit('best-reply-selected', this.id);
 		}
 	}
 });
@@ -65573,92 +65599,112 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _vm.editing
-          ? _c("div", [
+      _c(
+        "div",
+        {
+          staticClass: "card-body",
+          class: _vm.isBest ? "bg-success text-white" : "bg-light"
+        },
+        [
+          _vm.editing
+            ? _c("div", [
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.update($event)
+                      }
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.body,
+                            expression: "body"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { required: "" },
+                        domProps: { value: _vm.body },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.body = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("button", { staticClass: "btn btn-sm btn-primary" }, [
+                      _vm._v("Update")
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-link",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.editing = false
+                          }
+                        }
+                      },
+                      [_vm._v("Cancel")]
+                    )
+                  ]
+                )
+              ])
+            : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
+        ]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-footer" }, [
+        _vm.authorize("updateReply", _vm.reply)
+          ? _c("div", { staticClass: "float-left" }, [
               _c(
-                "form",
+                "button",
                 {
+                  staticClass: "btn btn-sm btn-outline-secondary",
                   on: {
-                    submit: function($event) {
-                      $event.preventDefault()
-                      return _vm.update($event)
+                    click: function($event) {
+                      _vm.editing = true
                     }
                   }
                 },
-                [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.body,
-                          expression: "body"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { required: "" },
-                      domProps: { value: _vm.body },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.body = $event.target.value
-                        }
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("button", { staticClass: "btn btn-sm btn-primary" }, [
-                    _vm._v("Update")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-link",
-                      attrs: { type: "button" },
-                      on: {
-                        click: function($event) {
-                          _vm.editing = false
-                        }
-                      }
-                    },
-                    [_vm._v("Cancel")]
-                  )
-                ]
+                [_vm._v("Edit")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm btn-outline-danger",
+                  on: { click: _vm.destroy }
+                },
+                [_vm._v("Delete")]
               )
             ])
-          : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
-      ]),
-      _vm._v(" "),
-      _vm.canUpdate
-        ? _c("div", { staticClass: "card-footer" }, [
-            _c(
+          : _vm._e(),
+        _vm._v(" "),
+        !_vm.isBest
+          ? _c(
               "button",
               {
-                staticClass: "btn btn-sm btn-outline-secondary",
-                on: {
-                  click: function($event) {
-                    _vm.editing = true
-                  }
-                }
+                staticClass: "btn btn-sm btn-outline-secondary float-right",
+                on: { click: _vm.markBestReply }
               },
-              [_vm._v("Edit")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-sm btn-outline-danger",
-                on: { click: _vm.destroy }
-              },
-              [_vm._v("Delete")]
+              [_vm._v("Best Reply?")]
             )
-          ])
-        : _vm._e()
+          : _vm._e()
+      ])
     ]
   )
 }
@@ -65768,14 +65814,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			body: ''
 		};
 	},
-
-
-	computed: {
-		signedIn: function signedIn() {
-			return window.App.signedIn;
-		}
-	},
-
 	mounted: function mounted() {
 		$('#body').atwho({
 			at: "@",
@@ -67748,6 +67786,27 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */,
+/* 211 */,
+/* 212 */,
+/* 213 */,
+/* 214 */,
+/* 215 */
+/***/ (function(module, exports) {
+
+var user = window.App.user;
+
+module.exports = {
+	updateReply: function updateReply(reply) {
+		return reply.user_id === user.id;
+	}
+};
 
 /***/ })
 /******/ ]);

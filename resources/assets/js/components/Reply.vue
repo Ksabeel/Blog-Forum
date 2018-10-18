@@ -12,7 +12,7 @@
 			</div>	        
 	    </div>
 
-	    <div class="card-body">
+	    <div class="card-body" :class="isBest ? 'bg-success text-white' : 'bg-light'">
 	        <div v-if="editing">
 	        	<form @submit.prevent="update">
 		            <div class="form-group">
@@ -27,9 +27,13 @@
 	        <div v-else v-html="body"></div>
 	    </div>
 
-        <div class="card-footer" v-if="canUpdate">
-            <button class="btn btn-sm btn-outline-secondary" @click="editing = true">Edit</button>
-            <button class="btn btn-sm btn-outline-danger" @click="destroy">Delete</button>
+        <div class="card-footer">
+        	<div v-if="authorize('updateReply', reply)" class="float-left">
+	            <button class="btn btn-sm btn-outline-secondary" @click="editing = true">Edit</button>
+	            <button class="btn btn-sm btn-outline-danger" @click="destroy">Delete</button>
+        	</div>
+
+            <button class="btn btn-sm btn-outline-secondary float-right" @click="markBestReply" v-if="! isBest">Best Reply?</button>
         </div>
 	</div>
 </template>
@@ -45,7 +49,9 @@
 			return {
 				body: this.data.body,
 				id: this.data.id,
-				editing: false
+				editing: false,
+				isBest: this.data.isBest,
+				reply: this.data
 			}
 		},
 
@@ -55,14 +61,12 @@
 			ago() {
 				return moment(this.data.created_at).fromNow();
 			},
+		},
 
-			signedIn() {
-				return window.App.signedIn
-			},
-
-			canUpdate() {
-				return this.authorize(user => this.data.user_id == user.id);
-			}
+		created() {
+			window.events.$on('best-reply-selected', id => {
+				this.isBest = (id == this.id);
+			})
 		},
 
 		methods: {
@@ -85,6 +89,12 @@
 				this.$emit('deleted', this.id);
 
 				flash('Your reply has been deleted!');
+			},
+
+			markBestReply() {
+				axios.post(`/replies/${this.id}/best`);
+
+				window.events.$emit('best-reply-selected', this.id);
 			}
 		}
 	};
