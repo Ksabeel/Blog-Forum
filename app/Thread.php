@@ -28,6 +28,10 @@ class Thread extends Model
      */
     protected $appends = ['isSubscribedTo'];
 
+    protected $casts = [
+        'locked' => 'boolean'
+    ];
+
     /**
      * Get the route key name for Channel.
      *
@@ -36,11 +40,6 @@ class Thread extends Model
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    public function lock()
-    {
-        $this->update(['locked' => true]);
     }
     
     /**

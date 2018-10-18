@@ -8,7 +8,12 @@
 			<paginator :dataSet="dataSet" @changed="fetch"></paginator>
 		</div>
 		
-		<new-reply @created="add"></new-reply>
+		<p class="text-center text-muted text-uppercase mt-5" v-if="$parent.locked">
+			This thread has been locked. No more replies are allowed.
+		</p>
+
+		<new-reply @created="add" v-else></new-reply>
+
 	</div>
 </template>
 

@@ -65148,16 +65148,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['threadRepliesCount'],
+	props: ['thread'],
 
 	data: function data() {
 		return {
-			repliesCount: this.threadRepliesCount
+			repliesCount: this.thread.replies_count,
+			locked: this.thread.locked
 		};
 	},
 
 
-	components: { Replies: __WEBPACK_IMPORTED_MODULE_0__Replies_vue___default.a, SubscribeButton: __WEBPACK_IMPORTED_MODULE_1__SubscribeButton_vue___default.a }
+	components: { Replies: __WEBPACK_IMPORTED_MODULE_0__Replies_vue___default.a, SubscribeButton: __WEBPACK_IMPORTED_MODULE_1__SubscribeButton_vue___default.a },
+
+	methods: {
+		toggleLock: function toggleLock() {
+			axios[this.locked ? 'delete' : 'post']('/lock-threads/' + this.thread.slug);
+
+			this.locked = !this.locked;
+		}
+	}
 
 });
 
@@ -65219,6 +65228,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__NewReply_vue__ = __webpack_require__(195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__NewReply_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__NewReply_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mixins_Collection__ = __webpack_require__(200);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -67670,7 +67684,17 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("new-reply", { on: { created: _vm.add } })
+      _vm.$parent.locked
+        ? _c(
+            "p",
+            { staticClass: "text-center text-muted text-uppercase mt-5" },
+            [
+              _vm._v(
+                "\n\t\tThis thread has been locked. No more replies are allowed.\n\t"
+              )
+            ]
+          )
+        : _c("new-reply", { on: { created: _vm.add } })
     ],
     2
   )
@@ -67820,6 +67844,9 @@ module.exports = {
 		var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'user_id';
 
 		return model[props] === user.id;
+	},
+	isAdmin: function isAdmin() {
+		return ['Sabeel', 'Test'].includes(user.name);
 	}
 };
 

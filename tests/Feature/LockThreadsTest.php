@@ -19,11 +19,9 @@ class LockThreadsTest extends TestCase
 
         $thread = create('App\Thread', ['user_id' => auth()->id()]);
 
-        $this->patch($thread->path(), [
-            'locked' => true
-        ])->assertStatus(403);
+        $this->post(route('lock-threads.store', $thread))->assertStatus(403);
 
-        $this->assertFalse(!! $thread->fresh()->locked);
+        $this->assertFalse($thread->fresh()->locked);
     }
 
     /** @test */
@@ -33,11 +31,21 @@ class LockThreadsTest extends TestCase
 
         $thread = create('App\Thread', ['user_id' => auth()->id()]);
 
-        $this->patch($thread->path(), [
-            'locked' => true
-        ]);
+        $this->post(route('lock-threads.store', $thread));
 
-        $this->assertTrue(!! $thread->fresh()->locked, 'Failed asserting that the thread was locked.');
+        $this->assertTrue($thread->fresh()->locked, 'Failed asserting that the thread was locked.');
+    }
+
+    /** @test */
+    function administrator_can_unlock_thread()
+    {
+        $this->signIn(factory('App\User')->states('administrator')->create());
+
+        $thread = create('App\Thread', ['user_id' => auth()->id(), 'locked' => true]);
+
+        $this->delete(route('lock-threads.destroy', $thread));
+
+        $this->assertFalse($thread->fresh()->locked, 'Failed asserting that the thread was unlocked.');
     }
 
     /** @test */
@@ -45,9 +53,7 @@ class LockThreadsTest extends TestCase
     {
     	$this->signIn();
 
-    	$thread = create('App\Thread');
-
-    	$thread->lock();
+    	$thread = create('App\Thread', ['locked' => true]);
 
     	$this->post($thread->path() . '/replies', [
     		'body' => 'Foobar',
